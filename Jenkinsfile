@@ -1,12 +1,14 @@
 pipeline {
-    agent any
+    agent {
+        label 'docker-agent'
+    }
 
     stages {
 
         stage('Build') {
             steps {
                 sh '''
-                echo "Building Java project..."
+                echo "Building Java project on Agent..."
                 cd "Password Protection"
                 mkdir -p build
                 javac -d build src/*.java
@@ -18,7 +20,7 @@ pipeline {
         stage('Test') {
             steps {
                 sh '''
-                echo "Running basic verification..."
+                echo "Running verification on Agent..."
                 cd "Password Protection"
                 ls build
                 echo "Test stage complete"
@@ -29,10 +31,10 @@ pipeline {
         stage('Package') {
             steps {
                 sh '''
-                echo "Packaging application..."
+                echo "Packaging application on Agent..."
                 cd "Password Protection"
                 jar cf FileEncrypter.jar -C build .
-                echo "Artifact created"
+                echo "Artifact created successfully"
                 '''
             }
         }
@@ -40,10 +42,10 @@ pipeline {
 
     post {
         success {
-            echo "CI/CD Pipeline completed successfully!"
+            echo "Distributed CI/CD Pipeline completed successfully on docker-agent!"
         }
         failure {
-            echo "Pipeline failed!"
+            echo "Pipeline failed on docker-agent!"
         }
     }
 }
